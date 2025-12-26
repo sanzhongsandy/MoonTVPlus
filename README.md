@@ -58,6 +58,7 @@
 - [配置文件](#配置文件)
 - [自动更新](#自动更新)
 - [环境变量](#环境变量)
+- [外部观影室服务器部署](#外部观影室服务器部署)
 - [弹幕后端部署](#弹幕后端部署)
 - [超分功能说明](#超分功能说明)
 - [AndroidTV 使用](#androidtv-使用)
@@ -251,7 +252,10 @@ dockge/komodo 等 docker compose UI 也有自动更新功能
 | NEXT_PUBLIC_DANMAKU_CACHE_EXPIRE_MINUTES | 弹幕缓存失效时间（分钟数，设为 0 时不缓存） | 0 或正整数 | 4320（3天） |
 | ENABLE_TVBOX_SUBSCRIBE | 是否启用 TVBOX 订阅功能 | true/false | false |
 | TVBOX_SUBSCRIBE_TOKEN | TVBOX 订阅 API 访问 Token，如启用TVBOX功能必须设置该项 | 任意字符串 | (空) |
-| WATCH_ROOM_ENABLED | 是否启用观影室功能（vercel部署不支持该功能，后续可能会开发外部服务器） | true/false | false |
+| WATCH_ROOM_ENABLED | 是否启用观影室功能（vercel部署不支持该功能，可使用外部服务器） | true/false | false |
+| WATCH_ROOM_SERVER_TYPE | 观影室服务器类型 | internal/external | internal |
+| WATCH_ROOM_EXTERNAL_SERVER_URL | 外部观影室服务器地址（当 SERVER_TYPE 为 external 时必填） | WebSocket URL | (空) |
+| WATCH_ROOM_EXTERNAL_SERVER_AUTH | 外部观影室服务器认证令牌（当 SERVER_TYPE 为 external 时必填） | 任意字符串 | (空) |
 | NEXT_PUBLIC_VOICE_CHAT_STRATEGY | 观影室语音聊天策略 | webrtc-fallback/server-only | webrtc-fallback |
 | NEXT_PUBLIC_ENABLE_OFFLINE_DOWNLOAD | 是否启用服务器离线下载功能（开启后也仅管理员和站长可用） | true/false | false |
 | OFFLINE_DOWNLOAD_DIR | 离线下载文件存储目录 | 任意有效路径 | /data |
@@ -278,6 +282,24 @@ NEXT_PUBLIC_VOICE_CHAT_STRATEGY 选项解释：
 
 - webrtc-fallback：使用 WebRTC P2P 连接，失败时自动回退到服务器中转（推荐）
 - server-only：仅使用服务器中转（适用于无法建立 P2P 连接的网络环境）
+
+### 外部观影室服务器部署
+
+如果您在 Vercel 等无法运行 WebSocket 服务器的平台部署，或希望将观影室服务器独立部署，可以使用外部观影室服务器。
+
+推荐使用由 [tgs9915](https://github.com/tgs9915) 开发的 [watch-room-server](https://github.com/tgs9915/watch-room-server) 项目进行部署。
+
+**配置步骤：**
+
+1. 按照 [watch-room-server](https://github.com/tgs9915/watch-room-server) 的文档部署外部服务器
+2. 在 MoonTVPlus 中设置以下环境变量：
+   ```env
+   WATCH_ROOM_ENABLED=true
+   WATCH_ROOM_SERVER_TYPE=external
+   WATCH_ROOM_EXTERNAL_SERVER_URL=wss://your-watch-room-server.com
+   WATCH_ROOM_EXTERNAL_SERVER_AUTH=your_secure_token
+   ```
+3. 重启应用即可使用外部观影室服务器
 
 
 

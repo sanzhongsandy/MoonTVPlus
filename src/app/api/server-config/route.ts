@@ -13,11 +13,12 @@ export async function GET(request: NextRequest) {
   const storageType = process.env.NEXT_PUBLIC_STORAGE_TYPE || 'localstorage';
 
   // 观影室配置从环境变量读取
+  // 注意：不要暴露 externalServerAuth 到前端，这是敏感凭据
   const watchRoomConfig = {
     enabled: process.env.WATCH_ROOM_ENABLED === 'true',
     serverType: (process.env.WATCH_ROOM_SERVER_TYPE as 'internal' | 'external') || 'internal',
     externalServerUrl: process.env.WATCH_ROOM_EXTERNAL_SERVER_URL,
-    externalServerAuth: process.env.WATCH_ROOM_EXTERNAL_SERVER_AUTH,
+    // externalServerAuth 不应该暴露给前端
   };
 
   // 如果使用 localStorage，返回默认配置
